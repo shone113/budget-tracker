@@ -6,23 +6,34 @@ from app.schemas.transaction import (
     TransactionCreateRequest,
     TransactionResponse,
     TransactionUpdateRequest,
+    TransactionFilters
 )
 from app.services import transaction as transaction_service
 
 from fastapi import APIRouter, Depends, Query
 from app.schemas.transaction import TransactionListResponse 
 
+import datetime
+from typing import Annotated
+from app.models.transaction import TransactionType
+
 
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
-@router.get("", response_model=TransactionListResponse)
-def list_transactions(
+@router.get("/search", response_model=TransactionListResponse)
+def search_transactions(
+    filters: Annotated[TransactionFilters, Query()],
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    items, total = transaction_service.list_transactions(db, page, page_size)
+    items, total = transaction_service.list_transactions(db, filters, page, page_size)
     return TransactionListResponse(items=items, total=total, page=page, page_size=page_size)
+
+
+@router.get("/{transaction_id}", response_model=TransactionResponse)
+def get_transaction(transaction_id: int, db: Session = Depends(get_db)):
+    return transaction_service.get_transaction(db, transaction_id)
 
 @router.post("", response_model=TransactionResponse, status_code=201)
 def create_transaction(data: TransactionCreateRequest, db: Session = Depends(get_db)):
@@ -35,3 +46,13 @@ def update_transaction(transaction_id: int, data: TransactionUpdateRequest, db: 
 @router.delete("/{transaction_id}", status_code=204)
 def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
     transaction_service.delete_transaction(db, transaction_id)
+
+@router.get("", response_model=TransactionListResponse)
+def list_transactions(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db),
+):
+    items, total = transaction_service.list_transactions(db, TransactionFilters(), page, page_size)
+    return TransactionListResponse(items=items, total=total, page=page, page_size=page_size)
+
