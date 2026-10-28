@@ -1,0 +1,37 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.db.session import get_db
+from app.schemas.transaction import (
+    TransactionCreateRequest,
+    TransactionResponse,
+    TransactionUpdateRequest,
+)
+from app.services import transaction as transaction_service
+
+from fastapi import APIRouter, Depends, Query
+from app.schemas.transaction import TransactionListResponse 
+
+
+router = APIRouter(prefix="/transactions", tags=["Transactions"])
+
+@router.get("", response_model=TransactionListResponse)
+def list_transactions(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db),
+):
+    items, total = transaction_service.list_transactions(db, page, page_size)
+    return TransactionListResponse(items=items, total=total, page=page, page_size=page_size)
+
+@router.post("", response_model=TransactionResponse, status_code=201)
+def create_transaction(data: TransactionCreateRequest, db: Session = Depends(get_db)):
+    return transaction_service.create_transaction(db, data)
+
+@router.patch("/{transaction_id}", response_model=TransactionResponse)
+def update_transaction(transaction_id: int, data: TransactionUpdateRequest, db: Session = Depends(get_db)):
+    return transaction_service.update_transaction(db, transaction_id, data)
+
+@router.delete("/{transaction_id}", status_code=204)
+def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
+    transaction_service.delete_transaction(db, transaction_id)
