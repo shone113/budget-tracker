@@ -7,12 +7,13 @@ from app.db.session import get_db
 
 from app.core.error_handlers import register_error_handlers
 
-from app.api.routes import categories, transactions
+from app.api.routes import categories, transactions, budgets
 
 app = FastAPI(title=settings.app_name)
 register_error_handlers(app)
 app.include_router(categories.router)         
 app.include_router(transactions.router)
+app.include_router(budgets.router)
 
 @app.get("/health")
 def health(db: Session = Depends(get_db)):
