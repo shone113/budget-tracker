@@ -95,3 +95,12 @@ def test_deleting_category_deletes_its_budgets(client):
     create_budget(client, category_id, "2026-10", "100")
     client.delete(f"/categories/{category_id}")
     assert client.get("/budgets?month=2026-10").json() == []
+
+def test_category_with_transactions_cannot_be_deleted(client):
+    category_id = create_category(client, "Food")
+    client.post("/transactions", json={"type": "expense", "amount": "10", "date": "2026-10-01", "category_id": category_id})
+
+    response = client.delete(f"/categories/{category_id}")
+
+    assert response.status_code == 409
+    assert len(client.get("/categories").json()) == 1

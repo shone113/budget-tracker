@@ -38,8 +38,13 @@ def update_category(db: Session, category_id: int, data: CategoryUpdateRequest) 
 
 def delete_category(db: Session, category_id: int) -> None:
     category = get_category(db, category_id)
+    name = category.name
     db.delete(category)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise ConflictError(f"Category '{name}' has transactions and cannot be deleted.")
 
 
 def _save(db: Session, category: Category) -> None:
