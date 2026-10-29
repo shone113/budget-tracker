@@ -1,0 +1,27 @@
+type,amount,date,description,category
+expense,9.80,2026-11-02,Sandwich,Eating out
+income,1500.00,2026-11-02,Monthly salary,Salary
+expense,3.60,2026-11-03,Espresso,Eating out
+expense,47.15,2026-11-03,Weekly groceries,Groceries
+expense,2.80,2026-11-04,Bus ticket,Transport
+income,60.00,2026-11-04,,Other
+expense,26.49,2026-11-05,Mobile plan,Utilities
+expense,22.40,2026-11-06,Pizza night,Eating out
+expense,12.30,2026-11-06,Vitamins,Health
+income,90.00,2026-11-07,Sold old bike lights,Other
+expense,58.90,2026-11-08,Supermarket,Groceries
+expense,33.50,2026-11-09,Fuel,Transport
+expense,10.99,2026-11-10,Streaming subscription,Entertainment
+expense,24.00,2026-11-11,Concert ticket,Entertainment
+expense,7.20,2026-11-12,Brunch,Eating out
+expense,71.30,2026-11-13,Heating bill,Utilities
+income,200.00,2026-11-14,Freelance logo design,Other
+expense,28.75,2026-11-15,Groceries and cleaning supplies,Groceries
+expense,17.80,2026-11-16,Taxi to airport,Transport
+expense,13.20,2026-11-17,Lunch,Eating out
+expense,55.00,2026-11-18,Winter jacket,Shopping
+expense,4.50,2026-11-19,Coffee,Eating out
+expense,27.60,2026-11-20,Internet bill,Utilities
+expense,32.90,2026-11-21,Online course,Education
+expense,15.70,2026-11-22,Fruit from local market,Groceries
+income,40.00,2026-11-23,,Other
