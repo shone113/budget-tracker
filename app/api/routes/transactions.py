@@ -17,6 +17,11 @@ import datetime
 from typing import Annotated
 from app.models.transaction import TransactionType
 
+from fastapi import UploadFile
+
+from app.core.exceptions import BusinessRuleError
+from app.schemas.transaction_import import TransactionImportResponse
+from app.services import transaction_import as transaction_import_service
 
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
@@ -56,3 +61,8 @@ def list_transactions(
     items, total = transaction_service.list_transactions(db, TransactionFilters(), page, page_size)
     return TransactionListResponse(items=items, total=total, page=page, page_size=page_size)
 
+@router.post("/import", response_model=TransactionImportResponse)
+def import_transactions(file: UploadFile, db: Session = Depends(get_db)):
+    if not (file.filename or "").lower().endswith(".csv"):
+        raise BusinessRuleError("Only .csv files are supported.")
+    return transaction_import_service.import_transactions(db, file.file)
